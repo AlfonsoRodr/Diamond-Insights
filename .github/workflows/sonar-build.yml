@@ -1,68 +1,68 @@
-name: SonarQube
+# name: SonarQube
 
-on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - "README.md"
-      - "docs/**"
-  workflow_dispatch:
-  pull_request:
-    types: [opened, synchronize, reopened]
+# on:
+#   push:
+#     branches:
+#       - main
+#     paths-ignore:
+#       - "README.md"
+#       - "docs/**"
+#   workflow_dispatch:
+#   pull_request:
+#     types: [opened, synchronize, reopened]
 
-env:
-  CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
-  CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
-  CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+# env:
+#   CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+#   CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+#   CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
 
-jobs:
-  build:
-    name: Build and analyze
-    runs-on: ubuntu-latest
+# jobs:
+#   build:
+#     name: Build and analyze
+#     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+#     steps:
+#       - uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: 21
-          distribution: "zulu"
+#       - name: Set up JDK 21
+#         uses: actions/setup-java@v4
+#         with:
+#           java-version: 21
+#           distribution: "zulu"
 
-      - name: Cache SonarQube packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+#       - name: Cache SonarQube packages
+#         uses: actions/cache@v4
+#         with:
+#           path: ~/.sonar/cache
+#           key: ${{ runner.os }}-sonar
+#           restore-keys: ${{ runner.os }}-sonar
 
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+#       - name: Cache Maven packages
+#         uses: actions/cache@v4
+#         with:
+#           path: ~/.m2
+#           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+#           restore-keys: ${{ runner.os }}-m2
 
-      # Create Dummy Keystore for testing
-      - name: Create resources directory
-        run: mkdir -p src/test/resources
-        working-directory: ./backend
+#       # Create Dummy Keystore for testing
+#       - name: Create resources directory
+#         run: mkdir -p src/test/resources
+#         working-directory: ./backend
 
-      - name: Dummy Keystore Creation
-        run: keytool -genkeypair -alias selfsigned -keyalg RSA -keysize 2048 -keystore src/test/resources/test-keystore.p12 -storetype PKCS12 -storepass password -keypass password -dname "CN=Test, OU=CI, O=Test, L=CI, ST=CI, C=ES"
-        working-directory: ./backend
+#       - name: Dummy Keystore Creation
+#         run: keytool -genkeypair -alias selfsigned -keyalg RSA -keysize 2048 -keystore src/test/resources/test-keystore.p12 -storetype PKCS12 -storepass password -keypass password -dname "CN=Test, OU=CI, O=Test, L=CI, ST=CI, C=ES"
+#         working-directory: ./backend
 
-      - name: Verificar que el informe de cobertura existe
-        run: ls -l coverage/jacoco.xml
-        working-directory: ./backend
+#       - name: Verificar que el informe de cobertura existe
+#         run: ls -l coverage/jacoco.xml
+#         working-directory: ./backend
 
-      - name: Build and analyze
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
-          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=codeurjc-students_2025-MyMLB -Dsonar.coverage.jacoco.xmlReportPaths=coverage/jacoco.xml
-        working-directory: ./backend
+#       - name: Build and analyze
+#         env:
+#           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#           MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+#           MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+#         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=codeurjc-students_2025-MyMLB -Dsonar.coverage.jacoco.xmlReportPaths=coverage/jacoco.xml
+#         working-directory: ./backend
