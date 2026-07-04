@@ -1,8 +1,6 @@
 package com.mlb.mlbportal.unit.player;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,9 +9,6 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import com.mlb.mlbportal.dto.player.CreatePlayerRequest;
-import com.mlb.mlbportal.handler.badRequest.InvalidTypeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,10 +17,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,11 +27,13 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mlb.mlbportal.dto.player.CreatePlayerRequest;
 import com.mlb.mlbportal.dto.player.PlayerDTO;
 import com.mlb.mlbportal.dto.player.pitcher.EditPitcherRequest;
 import com.mlb.mlbportal.dto.player.pitcher.PitcherDTO;
 import com.mlb.mlbportal.dto.player.position.EditPositionPlayerRequest;
 import com.mlb.mlbportal.dto.player.position.PositionPlayerDTO;
+import com.mlb.mlbportal.handler.badRequest.InvalidTypeException;
 import com.mlb.mlbportal.handler.conflict.PlayerAlreadyExistsException;
 import com.mlb.mlbportal.handler.conflict.RosterFullException;
 import com.mlb.mlbportal.handler.notFound.PlayerNotFoundException;
