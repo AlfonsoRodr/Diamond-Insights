@@ -1,0 +1,30 @@
+name: Auto-prefix Issues with DI-number
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  prefix-issue:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Rename issue with DI prefix
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issueNumber = context.payload.issue.number;
+            const currentTitle = context.payload.issue.title;
+            
+            if (currentTitle.startsWith('DI-')) {
+              return;
+            }
+            const newTitle = `DI-${issueNumber}: ${currentTitle}`;
+            
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              title: newTitle
+            });
